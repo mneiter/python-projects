@@ -68,7 +68,6 @@ def run_producer():
         producer.flush()
         producer.close()
         logging.info("[Producer] Stopped.")
-        time.sleep(DURATION)
 
 def run_consumer():
     """Function to run the Kafka consumer."""
@@ -94,7 +93,6 @@ def run_consumer():
     finally:
         consumer.close()
         logging.info("[Consumer] Stopped.")
-        time.sleep(DURATION)
 
 def main():
     """Main function to start producer and consumer threads."""

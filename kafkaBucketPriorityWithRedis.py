@@ -19,7 +19,7 @@ logging.basicConfig(
 # Kafka configuration
 TOPIC = 'test-topic'
 BOOTSTRAP_SERVERS = 'localhost:9092'
-DURATION = 10  # Duration in seconds
+DURATION = 60  # Duration in seconds
 
 # Redis configuration
 REDIS_HOST = 'localhost'
@@ -30,21 +30,29 @@ REDIS_DB = 0
 stop_event = threading.Event()
 
 def create_producer():
-    """Create and return a Kafka producer."""
-    return KafkaProducer(
-        bootstrap_servers=BOOTSTRAP_SERVERS,
-        value_serializer=lambda v: json.dumps(v).encode('utf-8')
-    )
+    """Create and return a Kafka producer with exception handling."""
+    try:
+        return KafkaProducer(
+            bootstrap_servers=BOOTSTRAP_SERVERS,
+            value_serializer=lambda v: json.dumps(v).encode('utf-8')
+        )
+    except Exception as e:
+        logging.error(f"[Producer] Failed to create Kafka producer: {e}")
+        raise
 
 def create_consumer():
-    """Create and return a Kafka consumer."""
-    return KafkaConsumer(
-        TOPIC,
-        bootstrap_servers=BOOTSTRAP_SERVERS,
-        auto_offset_reset='earliest',
-        group_id='my-group',
-        value_deserializer=lambda x: json.loads(x.decode('utf-8'))
-    )
+    """Create and return a Kafka consumer with exception handling."""
+    try:
+        return KafkaConsumer(
+            TOPIC,
+            bootstrap_servers=BOOTSTRAP_SERVERS,
+            auto_offset_reset='earliest',
+            group_id='my-group',
+            value_deserializer=lambda x: json.loads(x.decode('utf-8'))
+        )
+    except Exception as e:
+        logging.error(f"[Consumer] Failed to create Kafka consumer: {e}")
+        raise
 
 def create_redis_client():
     """Create and return a Redis client."""
