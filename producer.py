@@ -1,17 +1,25 @@
-from kafka import KafkaProducer
 import json
+import logging
 import time
+from kafka import KafkaProducer
+from config import BOOTSTRAP_SERVERS, TOPIC
 
-producer = KafkaProducer(
-    bootstrap_servers='localhost:9092',
-    value_serializer=lambda v: json.dumps(v).encode('utf-8')
-)
+class KafkaProducerService:
+    def __init__(self):
+        self.producer = KafkaProducer(
+            bootstrap_servers=BOOTSTRAP_SERVERS,
+            value_serializer=lambda v: json.dumps(v).encode('utf-8')
+        )
+        self.logger = logging.getLogger(self.__class__.__name__)
 
-for i in range(10):
-    message = {'number': i, 'timestamp': time.time()}
-    producer.send('test-topic', value=message)
-    print(f"Sent: {message}")
-    time.sleep(1)
+    def send_message(self, message: dict):
+        try:
+            self.producer.send(TOPIC, value=message)
+            self.logger.info(f"Sent: {message}")
+        except Exception as e:
+            self.logger.error(f"Error sending message: {e}")
 
-producer.flush()
-producer.close()
+    def close(self):
+        self.producer.flush()
+        self.producer.close()
+        self.logger.info("Producer closed.")
