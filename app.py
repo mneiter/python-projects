@@ -5,6 +5,7 @@ from producer import KafkaProducerService
 from consumer import KafkaConsumerService
 from config import DURATION
 
+
 class KafkaApp:
     def __init__(self, duration=DURATION):
         self.duration = duration
