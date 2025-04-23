@@ -3,9 +3,10 @@ import time
 import logging
 from producer import KafkaProducerService
 from consumer import KafkaConsumerService
+from config import DURATION
 
 class KafkaApp:
-    def __init__(self, duration=60):
+    def __init__(self, duration=DURATION):
         self.duration = duration
         self.stop_event = threading.Event()
         self.logger = logging.getLogger(self.__class__.__name__)
@@ -45,5 +46,5 @@ class KafkaApp:
             self.logger.info("All threads stopped.")
 
 if __name__ == "__main__":
-    app = KafkaApp(duration=60)
+    app = KafkaApp(duration=DURATION)
     app.start()

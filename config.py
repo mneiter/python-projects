@@ -12,6 +12,9 @@ REDIS_HOST = 'localhost'
 REDIS_PORT = 6379
 REDIS_DB = 0
 
+# Duration in seconds
+DURATION = 60  
+
 # Logging configuration
 LOG_DIR = 'logs'
 
