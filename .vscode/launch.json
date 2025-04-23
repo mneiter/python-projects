@@ -14,7 +14,7 @@
         },
         {
             "name": "Debug app.py",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/app.py",
             "console": "integratedTerminal",
@@ -25,7 +25,7 @@
           },
           {
             "name": "Debug single test",
-            "type": "python",
+            "type": "debugpy",
             "request": "launch",
             "module": "pytest",
             "args": ["tests/"],
