@@ -2,7 +2,7 @@ import json
 import logging
 from kafka import KafkaConsumer
 import redis
-from mongodb_service import MongoDBService
+from services.mongodb_service import MongoDBService
 from config import BOOTSTRAP_SERVERS, TOPIC, GROUP_ID, REDIS_HOST, REDIS_PORT, REDIS_DB
 
 class KafkaConsumerService:

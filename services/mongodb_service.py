@@ -1,4 +1,4 @@
-from pymongo import MongoClient
+from pymongo import MongoClient, ASCENDING, DESCENDING
 import logging
 from pymongo.errors import ConnectionFailure, OperationFailure
 

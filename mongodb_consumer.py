@@ -1,6 +1,6 @@
 import logging
 import time
-from mongodb_service import MongoDBService
+from services.mongodb_service import MongoDBService
 from pymongo.errors import ConnectionFailure, OperationFailure
 
 class MongoDBConsumerService:
