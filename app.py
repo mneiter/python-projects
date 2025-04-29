@@ -3,6 +3,7 @@ import time
 import logging
 from producer import KafkaProducerService
 from consumer import KafkaConsumerService
+from mongodb_consumer import MongoDBConsumerService
 from config import DURATION
 
 
@@ -13,6 +14,8 @@ class KafkaApp:
         self.logger = logging.getLogger(self.__class__.__name__)
         self.producer_service = KafkaProducerService()
         self.consumer_service = KafkaConsumerService()
+        self.mongo_consumer_service = MongoDBConsumerService()
+        
 
     def run_producer(self):
         i = 0
@@ -28,12 +31,17 @@ class KafkaApp:
     def run_consumer(self):
         self.consumer_service.consume_messages(self.stop_event)
 
+    def run_mongo_consumer(self):
+        self.mongo_consumer_service.consume_documents(self.stop_event)
+
     def start(self):
         producer_thread = threading.Thread(target=self.run_producer, name="ProducerThread", daemon=True)
         consumer_thread = threading.Thread(target=self.run_consumer, name="ConsumerThread", daemon=True)
+        mongo_consumer_thread = threading.Thread(target=self.run_mongo_consumer, name="MongoDBConsumerThread", daemon=True)
 
         producer_thread.start()
         consumer_thread.start()
+        mongo_consumer_thread.start()
 
         try:
             time.sleep(self.duration)
@@ -44,6 +52,7 @@ class KafkaApp:
             self.stop_event.set()
             producer_thread.join()
             consumer_thread.join()
+            mongo_consumer_thread.join()
             self.logger.info("All threads stopped.")
 
 if __name__ == "__main__":
