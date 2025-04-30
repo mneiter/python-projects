@@ -6,9 +6,8 @@ from consumer import KafkaConsumerService
 from mongodb_consumer import MongoDBConsumerService
 from config import DURATION
 
-
 class KafkaApp:
-    def __init__(self, duration=DURATION):
+    def __init__(self, duration=DURATION):                
         self.duration = duration
         self.stop_event = threading.Event()
         self.logger = logging.getLogger(self.__class__.__name__)
