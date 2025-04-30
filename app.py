@@ -31,6 +31,7 @@ class KafkaApp:
         self.consumer_service.consume_messages(self.stop_event)
 
     def run_mongo_consumer(self):
+        self.mongo_consumer_service.consume_mongodb_examples()
         self.mongo_consumer_service.consume_documents(self.stop_event)
 
     def start(self):
