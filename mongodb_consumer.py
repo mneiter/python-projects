@@ -28,3 +28,48 @@ class MongoDBConsumerService:
         finally:
             self.mongo_service.client.close()
             self.logger.info("MongoDB Consumer stopped.")
+
+    def consume_mongodb_examples(self):        
+        self.mongodb_data()
+        self.logger.info("MongoDB data inserted.")
+        self.logger.info("Fetching documents from MongoDB...")
+        
+        self.get_mongodb_documents()
+
+        self.aggregate_and_sort_message_counts()
+
+        
+
+    def aggregate_and_sort_message_counts(self):
+        pipeline = [
+            {"$group": {"_id": "$number", "count": {"$sum": 1}}},
+            {"$sort": {"count": -1}}
+        ]
+        self.logger.info("Aggregating and sorting message counts...")
+        self.logger.info(f"Pipeline: {pipeline}")
+        
+        aggregation_result = self.mongo_service.aggregate_documents('kafka_messages', pipeline)
+
+        for doc in aggregation_result:
+            self.logger.info(f"Aggregated document: {doc}")
+
+    def get_mongodb_documents(self):
+        docs = self.mongo_service.find_documents(
+            collection_name='kafka_messages',
+            filter_query={"number": {"$gt": 10}},
+            limit=5,
+            skip=0,
+            sort_by="timestamp",
+            descending=True
+        )
+
+        for doc in docs:
+            self.logger.info(f"Document fetched: {doc}")
+
+    def mongodb_data(self):
+        self.mongo_service.insert_document('kafka_messages', {'number': 5, 'timestamp': '2025-04-23 18:00:00'})
+        self.mongo_service.insert_document('kafka_messages', {'number': 10, 'timestamp': '2025-04-23 18:00:00'})
+        self.mongo_service.insert_document('kafka_messages', {'number': 15, 'timestamp': '2025-04-23 18:00:00'})
+        self.mongo_service.insert_document('kafka_messages', {'number': 20, 'timestamp': '2025-04-23 18:00:00'})
+        self.mongo_service.insert_document('kafka_messages', {'number': 25, 'timestamp': '2025-04-23 18:00:00'})
+
