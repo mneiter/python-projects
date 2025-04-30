@@ -95,6 +95,9 @@ services:
       - .env
     environment:
       ENVIRONMENT: docker
+      BOOTSTRAP_SERVERS: kafka:9092
+      REDIS_HOST: redis
+      MONGODB_URI: mongodb://mongo-db:27017
 volumes:
   kafka-data:
   redis-data:
