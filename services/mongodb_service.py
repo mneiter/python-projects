@@ -1,9 +1,10 @@
+from config import MONGODB_URI, LOG_DIR, LOG_FILE
 from pymongo import MongoClient, ASCENDING, DESCENDING
 import logging
 from pymongo.errors import ConnectionFailure, OperationFailure
 
 class MongoDBService:
-    def __init__(self, host='localhost', port=27017, db_name='testdb'):
+    def __init__(self, host=MONGODB_URI, port=27017, db_name='testdb'):
         try:
             self.client = MongoClient(host, port)
 

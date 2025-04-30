@@ -15,11 +15,11 @@ class KafkaProducerService:
     def send_message(self, message: dict):
         try:
             self.producer.send(TOPIC, value=message)
-            self.logger.info(f"Sent: {message}")
+            self.logger.info(f"Kafka: Message sent to topic '{TOPIC}' with value: {json.dumps(message)}")
         except Exception as e:
-            self.logger.error(f"Error sending message: {e}")
+            self.logger.error(f"Kafka: Error sending message: {e}")
 
     def close(self):
         self.producer.flush()
         self.producer.close()
-        self.logger.info("Producer closed.")
+        self.logger.info("Kafka: Producer closed.")
