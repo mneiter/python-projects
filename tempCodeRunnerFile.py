@@ -1,0 +1,1 @@
+        mongo_consumer_thread = threading.Thread(target=self.run_mongo_consumer, name="MongoDBConsumerThread", daemon=True)

@@ -22,13 +22,7 @@ services:
       - kafka-data:/var/lib/kafka/data
     healthcheck:
       test:
-        [
-          'CMD',
-          'kafka-topics',
-          '--bootstrap-server',
-          'localhost:9092',
-          '--list',
-        ]
+        ['CMD', 'kafka-topics', '--bootstrap-server', 'kafka:9092', '--list']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -100,11 +94,7 @@ services:
     env_file:
       - .env
     environment:
-      BOOTSTRAP_SERVERS: kafka:9092
-      REDIS_HOST: redis
-      MONGODB_URI: mongodb://mongo-db:27017
-    command: ['python', 'app.py']
-
+      ENVIRONMENT: docker
 volumes:
   kafka-data:
   redis-data:
