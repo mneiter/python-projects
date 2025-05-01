@@ -5,16 +5,21 @@ from producer import KafkaProducerService
 from consumer import KafkaConsumerService
 from mongodb_consumer import MongoDBConsumerService
 from config import DURATION
+from services.elasticsearch_log_handler import ElasticsearchLogHandler
+
 
 class KafkaApp:
     def __init__(self, duration=DURATION):                
         self.duration = duration
         self.stop_event = threading.Event()
-        self.logger = logging.getLogger(self.__class__.__name__)
+
+        self.es_handler = ElasticsearchLogHandler(base_index="logs-app")
+        self.es_handler.setLevel(logging.INFO)
+
+        self.logger = logging.getLogger(self.__class__.__name__).addHandler(self.es_handler)
         self.producer_service = KafkaProducerService()
         self.consumer_service = KafkaConsumerService()
-        self.mongo_consumer_service = MongoDBConsumerService()
-        
+        self.mongo_consumer_service = MongoDBConsumerService()        
 
     def run_producer(self):
         i = 0

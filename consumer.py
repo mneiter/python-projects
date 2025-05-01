@@ -8,9 +8,8 @@ from config import BOOTSTRAP_SERVERS, TOPIC, GROUP_ID, REDIS_HOST, REDIS_PORT, R
 class KafkaConsumerService:
     def __init__(self):
         self.consumer = KafkaConsumer(
-            TOPIC,
-            bootstrap_servers='localhost:9092',
-            # bootstrap_servers=BOOTSTRAP_SERVERS,
+            TOPIC,            
+            bootstrap_servers=BOOTSTRAP_SERVERS,
             auto_offset_reset='earliest',
             group_id=GROUP_ID,
             value_deserializer=lambda x: json.loads(x.decode('utf-8'))
