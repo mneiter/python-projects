@@ -4,20 +4,25 @@ from kafka import KafkaConsumer
 import redis
 from services.mongodb_service import MongoDBService
 from config import BOOTSTRAP_SERVERS, TOPIC, GROUP_ID, REDIS_HOST, REDIS_PORT, REDIS_DB
+from logger import get_logger
 
 class KafkaConsumerService:
-    def __init__(self):
-        self.consumer = KafkaConsumer(
+    def __init__(self, logger=None):
+        try:
+            self.logger = logger or get_logger(self.__class__.__name__)
+            self.consumer = KafkaConsumer(
             TOPIC,            
             bootstrap_servers=BOOTSTRAP_SERVERS,
             auto_offset_reset='earliest',
             group_id=GROUP_ID,
             value_deserializer=lambda x: json.loads(x.decode('utf-8'))
-        )
-        self.redis_client = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
-        self.mongo_service = MongoDBService()
-        self.logger = logging.getLogger(self.__class__.__name__)
-
+            )
+            self.redis_client = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
+            self.mongo_service = MongoDBService()
+        except Exception as e:
+            logging.error(f"Failed to initialize KafkaConsumerService: {e}")
+            raise
+                    
     def consume_messages(self, stop_event):
         try:
             while not stop_event.is_set():

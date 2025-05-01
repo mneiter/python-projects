@@ -62,3 +62,6 @@ except Exception as e:
 # Добавляем все обработчики
 logger.addHandler(file_handler)
 logger.addHandler(console_handler)
+
+def get_logger(name="AppLogger"):
+    return logging.getLogger(name)

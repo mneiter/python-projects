@@ -3,11 +3,12 @@ import logging
 import time
 from kafka import KafkaProducer
 from config import BOOTSTRAP_SERVERS, TOPIC
+from logger import get_logger
 
 class KafkaProducerService:
-    def __init__(self):
+    def __init__(self, logger=None):
         try:
-            self.logger = logging.getLogger(self.__class__.__name__)
+            self.logger = logger or get_logger(self.__class__.__name__)        
             self.logger.info(f"BOOTSTRAP_SERVERS: {BOOTSTRAP_SERVERS}")
             self.producer = KafkaProducer(
                 bootstrap_servers=BOOTSTRAP_SERVERS,

@@ -2,11 +2,16 @@ import logging
 import time
 from services.mongodb_service import MongoDBService
 from pymongo.errors import ConnectionFailure, OperationFailure
+from logger import get_logger
 
 class MongoDBConsumerService:
-    def __init__(self):
-        self.mongo_service = MongoDBService()
-        self.logger = logging.getLogger(self.__class__.__name__)
+    def __init__(self, logger=None):
+        try:
+            self.logger = logger or get_logger(self.__class__.__name__)
+            self.mongo_service = MongoDBService()
+        except Exception as e:
+            logging.error(f"Failed to initialize MongoDBConsumerService: {e}")
+            raise
 
     def consume_documents(self, stop_event):
         """Periodically fetch documents from MongoDB and print them."""
