@@ -6,11 +6,18 @@ from config import BOOTSTRAP_SERVERS, TOPIC
 
 class KafkaProducerService:
     def __init__(self):
-        self.producer = KafkaProducer(
-            bootstrap_servers=BOOTSTRAP_SERVERS,
-            value_serializer=lambda v: json.dumps(v).encode('utf-8')
-        )
-        self.logger = logging.getLogger(self.__class__.__name__)
+        try:
+            self.logger = logging.getLogger(self.__class__.__name__)
+            self.logger.info(f"BOOTSTRAP_SERVERS: {BOOTSTRAP_SERVERS}")
+            self.producer = KafkaProducer(
+                bootstrap_servers=BOOTSTRAP_SERVERS,
+                value_serializer=lambda v: json.dumps(v).encode('utf-8')
+            )
+            self.logger.info("Kafka: Producer instance created successfully.")            
+            self.logger.info("Kafka: Producer initialized successfully.")
+        except Exception as e:
+            logging.error(f"Kafka: Error initializing producer: {e}")
+            raise
 
     def send_message(self, message: dict):
         try:
