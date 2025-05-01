@@ -7,32 +7,27 @@ from consumer import KafkaConsumerService
 from mongodb_consumer import MongoDBConsumerService
 from config import DURATION, LOGSTASH_HOST, LOGSTASH_PORT
 from handlers.logstash_handler import LogstashTCPHandler
+from logger import logger
+
 
 class KafkaApp:
     def __init__(self, duration=DURATION):
-        self.duration = duration
-        self.stop_event = threading.Event()       
+        try:            
+            self.duration = duration
+            self.stop_event = threading.Event()
+            
+            self.logger = logger
+            self.logger.info("Initializing KafkaApp...")
+            self.logger.info(f"Logstash host: {LOGSTASH_HOST}, port: {LOGSTASH_PORT}")
+            
 
-        self.initialize_logger()
-
-        self.producer_service = KafkaProducerService()
-        self.consumer_service = KafkaConsumerService()
-        self.mongo_consumer_service = MongoDBConsumerService() 
-
-    def initialize_logger(self):
-        self.logger = logging.getLogger(self.__class__.__name__)
-        self.logger.setLevel(logging.INFO)
-        
-        self.logstash_handler = LogstashTCPHandler(host=LOGSTASH_HOST, port=LOGSTASH_PORT)
-        formatter = logging.Formatter(json.dumps({
-            "timestamp": "%(asctime)s",
-            "level": "%(levelname)s",
-            "message": "%(message)s",
-            "logger": "%(name)s",
-            "thread": "%(threadName)s"
-        }))
-        self.logstash_handler.setFormatter(formatter)
-        self.logger.addHandler(self.logstash_handler)       
+            self.producer_service = KafkaProducerService()
+            self.consumer_service = KafkaConsumerService()
+            self.mongo_consumer_service = MongoDBConsumerService()
+            self.logger.info("KafkaApp initialized successfully.")
+        except Exception as e:
+            logger.error(f"Error initializing KafkaApp: {e}")
+            raise
 
     def run_producer(self):
         i = 0
