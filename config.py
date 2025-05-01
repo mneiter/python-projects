@@ -13,10 +13,7 @@ IS_DOCKER = ENVIRONMENT == "docker"
 # --- Kafka ---
 TOPIC = os.getenv("TOPIC", "test-topic")
 GROUP_ID = os.getenv("GROUP_ID", "my-group")
-BOOTSTRAP_SERVERS = os.getenv(
-    "BOOTSTRAP_SERVERS",
-    "kafka:9092" if IS_DOCKER else "localhost:9092"
-)
+BOOTSTRAP_SERVERS = os.getenv("BOOTSTRAP_SERVERS", "kafka:9092" if IS_DOCKER else "localhost:9092")
 
 # --- Redis ---
 REDIS_HOST = os.getenv("REDIS_HOST", "redis" if IS_DOCKER else "localhost")
