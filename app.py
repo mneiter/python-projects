@@ -1,25 +1,38 @@
+import json
 import threading
 import time
 import logging
 from producer import KafkaProducerService
 from consumer import KafkaConsumerService
 from mongodb_consumer import MongoDBConsumerService
-from config import DURATION
-from services.elasticsearch_log_handler import ElasticsearchLogHandler
-
+from config import DURATION, LOGSTASH_HOST, LOGSTASH_PORT
+from handlers.logstash_handler import LogstashTCPHandler
 
 class KafkaApp:
-    def __init__(self, duration=DURATION):                
+    def __init__(self, duration=DURATION):
         self.duration = duration
-        self.stop_event = threading.Event()
+        self.stop_event = threading.Event()       
 
-        self.es_handler = ElasticsearchLogHandler(base_index="logs-app")
-        self.es_handler.setLevel(logging.INFO)
+        self.initialize_logger()
 
-        self.logger = logging.getLogger(self.__class__.__name__).addHandler(self.es_handler)
         self.producer_service = KafkaProducerService()
         self.consumer_service = KafkaConsumerService()
-        self.mongo_consumer_service = MongoDBConsumerService()        
+        self.mongo_consumer_service = MongoDBConsumerService() 
+
+    def initialize_logger(self):
+        self.logger = logging.getLogger(self.__class__.__name__)
+        self.logger.setLevel(logging.INFO)
+        
+        self.logstash_handler = LogstashTCPHandler(host=LOGSTASH_HOST, port=LOGSTASH_PORT)
+        formatter = logging.Formatter(json.dumps({
+            "timestamp": "%(asctime)s",
+            "level": "%(levelname)s",
+            "message": "%(message)s",
+            "logger": "%(name)s",
+            "thread": "%(threadName)s"
+        }))
+        self.logstash_handler.setFormatter(formatter)
+        self.logger.addHandler(self.logstash_handler)       
 
     def run_producer(self):
         i = 0

@@ -35,6 +35,10 @@ ELASTICSEARCH_PORT = int(os.getenv("ELASTICSEARCH_PORT", 9200))
 ELASTICSEARCH_SCHEME = os.getenv("ELASTICSEARCH_SCHEME", "http")
 ELASTICSEARCH_LOG_INDEX = os.getenv("ELASTICSEARCH_LOG_INDEX", "logs-app")
 
+# --- Logstash Config ---
+LOGSTASH_HOST = os.getenv("LOGSTASH_HOST", "logstash" if IS_DOCKER else "localhost")
+LOGSTASH_PORT = int(os.getenv("LOGSTASH_PORT", 5000))
+
 # --- Runtime ---
 DURATION = int(os.getenv("DURATION", 60))
 
@@ -62,3 +66,4 @@ logger.info(f"Kafka: {BOOTSTRAP_SERVERS}, Topic: {TOPIC}, Group: {GROUP_ID}")
 logger.info(f"Redis: {REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}")
 logger.info(f"MongoDB: {MONGODB_URI}")
 logger.info(f"Elasticsearch: {ELASTICSEARCH_SCHEME}://{ELASTICSEARCH_HOST}:{ELASTICSEARCH_PORT}")
+logger.info(f"Logstash: {LOGSTASH_HOST}:{LOGSTASH_PORT}")
