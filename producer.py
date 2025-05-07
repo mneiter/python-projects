@@ -16,7 +16,6 @@ class KafkaProducerService:
                 bootstrap_servers=BOOTSTRAP_SERVERS,
                 value_serializer=lambda v: json.dumps(v).encode('utf-8')
             )
-            self.logger.info("Kafka: Producer instance created successfully.")            
             self.logger.info("Kafka: Producer initialized successfully.")
         except Exception as e:
             logging.error(f"Kafka: Error initializing producer: {e}")

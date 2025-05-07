@@ -21,8 +21,9 @@ class KafkaConsumerService:
             )
             self.redis_client = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, db=REDIS_DB)
             self.mongo_service = MongoDBService()
+            self.logger.info("Kafka: Consumer initialized successfully.")
         except Exception as e:
-            logging.error(f"Failed to initialize KafkaConsumerService: {e}")
+            logging.error(f"Kafka: Error initializing consumer: {e}")
             raise
                     
     def consume_messages(self, stop_event):
