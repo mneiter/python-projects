@@ -39,6 +39,10 @@ ELASTICSEARCH_LOG_INDEX = os.getenv("ELASTICSEARCH_LOG_INDEX", "logs-app")
 LOGSTASH_HOST = os.getenv("LOGSTASH_HOST", "logstash" if IS_DOCKER else "localhost")
 LOGSTASH_PORT = int(os.getenv("LOGSTASH_PORT", 5000))
 
+# Prometheus/Grafana
+PROMETHEUS_PORT = int(os.getenv("PROMETHEUS_PORT", 9090))
+GRAFANA_PORT = int(os.getenv("GRAFANA_PORT", 3000))
+
 # --- Runtime ---
 DURATION = int(os.getenv("DURATION", 60))
 

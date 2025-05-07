@@ -4,6 +4,8 @@ import time
 from kafka import KafkaProducer
 from config import BOOTSTRAP_SERVERS, TOPIC
 from logger import get_logger
+from monitoring.metrics import MESSAGES_PRODUCED
+
 
 class KafkaProducerService:
     def __init__(self, logger=None):
@@ -23,6 +25,8 @@ class KafkaProducerService:
     def send_message(self, message: dict):
         try:
             self.producer.send(TOPIC, value=message)
+            MESSAGES_PRODUCED.inc()
+
             self.logger.info(f"Kafka: Message sent to topic '{TOPIC}' with value: {json.dumps(message)}")
         except Exception as e:
             self.logger.error(f"Kafka: Error sending message: {e}")

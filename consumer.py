@@ -5,6 +5,8 @@ import redis
 from services.mongodb_service import MongoDBService
 from config import BOOTSTRAP_SERVERS, TOPIC, GROUP_ID, REDIS_HOST, REDIS_PORT, REDIS_DB
 from logger import get_logger
+from monitoring.metrics import MESSAGES_CONSUMED, MESSAGE_PROCESSING_TIME
+
 
 class KafkaConsumerService:
     def __init__(self, logger=None):
@@ -29,16 +31,18 @@ class KafkaConsumerService:
                 msg_pack = self.consumer.poll(timeout_ms=1000)
                 for messages in msg_pack.values():
                     for message in messages:
-                        self.logger.info(f"Received: {message.value}")
-                        key = f"message:{message.offset}"
-                        # Store in Redis with a TTL of 1 day
-                        # Using message offset as the key for Redis
-                        self.redis_client.set(key, json.dumps(message.value), ex=60*60*24) 
-                        self.logger.info(f"Stored in Redis with key: {key}")
-                        # Store in MongoDB
-                        # Using message value as the document to be stored in MongoDB
-                        self.mongo_service.insert_document('kafka_messages', message.value)
-                        self.logger.info(f"Stored in MongoDB in collection 'kafka_messages'")
+                        with MESSAGE_PROCESSING_TIME.time():
+                            self.logger.info(f"Received: {message.value}")
+                            MESSAGES_CONSUMED.inc()
+                            key = f"message:{message.offset}"
+                            # Store in Redis with a TTL of 1 day
+                            # Using message offset as the key for Redis
+                            self.redis_client.set(key, json.dumps(message.value), ex=60*60*24) 
+                            self.logger.info(f"Stored in Redis with key: {key}")
+                            # Store in MongoDB
+                            # Using message value as the document to be stored in MongoDB
+                            self.mongo_service.insert_document('kafka_messages', message.value)
+                            self.logger.info(f"Stored in MongoDB in collection 'kafka_messages'")
         except Exception as e:
             self.logger.error(f"Error consuming messages: {e}")
         finally:

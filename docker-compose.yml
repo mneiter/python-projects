@@ -120,8 +120,29 @@ services:
       - '5601:5601'
     environment:
       ELASTICSEARCH_HOSTS: 'http://elasticsearch:9200'
+    volumes:
+      - kibana-storage:/usr/share/kibana/data
     depends_on:
       - elasticsearch
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - '9090:9090'
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - '3000:3000'
+    volumes:
+      - grafana-storage:/var/lib/grafana
+    restart: unless-stopped
 
   app:
     build:
@@ -155,3 +176,6 @@ volumes:
   redis-data:
   mongo-data:
   esdata:
+  kibana-storage:
+  grafana-storage:
+  prometheus-data:
