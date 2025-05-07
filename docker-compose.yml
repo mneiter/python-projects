@@ -98,7 +98,7 @@ services:
     image: docker.elastic.co/logstash/logstash:8.12.0
     container_name: logstash
     ports:
-      - '5000:5000' # вход логов от приложений
+      - '5000:5000'
     volumes:
       - ./logstash/pipeline:/usr/share/logstash/pipeline
     depends_on:
