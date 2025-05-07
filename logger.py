@@ -13,6 +13,9 @@ LOG_TO_FILE = os.getenv("LOG_TO_FILE", "true").lower() == "true"
 LOG_TO_CONSOLE = os.getenv("LOG_TO_CONSOLE", "true").lower() == "true"
 LOG_TO_LOGSTASH = os.getenv("LOG_TO_LOGSTASH", "true").lower() == "true"
 
+LOGSTASH_HOST = os.getenv("LOGSTASH_HOST", "localhost")
+LOGSTASH_PORT = int(os.getenv("LOGSTASH_PORT", 5000))
+
 # Ensure log directory exists
 os.makedirs(LOG_DIR, exist_ok=True)
 
@@ -72,6 +75,13 @@ if LOG_TO_LOGSTASH:
     except Exception as e:
         _logger.warning("Logstash handler not configured: %s", e)
 
+_logger.info("This is a test log message from logger.py")
+
 # Getter to reuse logger elsewhere
 def get_logger(name="AppLogger"):
-    return logging.getLogger(name)
+    logger = logging.getLogger(name)
+    if not logger.handlers:  # Avoid duplicate handlers
+        for handler in _logger.handlers:
+            logger.addHandler(handler)
+        logger.setLevel(_logger.level)
+    return logger

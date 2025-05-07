@@ -2,12 +2,12 @@ from config import MONGODB_URI, LOG_DIR, LOG_FILE
 from pymongo import MongoClient, ASCENDING, DESCENDING
 import logging
 from pymongo.errors import ConnectionFailure, OperationFailure
+from logger import get_logger
 
 class MongoDBService:
     def __init__(self, host=MONGODB_URI, port=27017, db_name='testdb'):
         try:
-            self.client = MongoClient(host, port)
-
+            self.logger = get_logger(self.__class__.__name__)
             self.client = MongoClient(
                 host=host,
                 port=port,
@@ -19,9 +19,7 @@ class MongoDBService:
 
             self.client.admin.command('ping') # Test the connection
             self.db = self.client[db_name]
-            self.logger = logging.getLogger(self.__class__.__name__)
             self.logger.info(f"Connected to MongoDB at {host}:{port}, DB: {db_name}")
-
             self.create_indexes() # Create indexes if needed
         except ConnectionFailure:
             self.logger.error("Failed to connect to MongoDB server.")

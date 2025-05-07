@@ -99,6 +99,15 @@ services:
     container_name: logstash
     ports:
       - '5000:5000'
+    environment:
+      - LOG_LEVEL=info
+      - PIPELINE_LOG_LEVEL=info
+    restart: unless-stopped
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:9600']
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - ./logstash/pipeline:/usr/share/logstash/pipeline
     depends_on:

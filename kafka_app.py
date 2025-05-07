@@ -25,7 +25,10 @@ class KafkaApp:
 
             self.logger.info("KafkaApp initialized successfully.")
         except Exception as e:
-            logger.error(f"Error during KafkaApp initialization: {e}")
+            if hasattr(self, 'logger'):
+                self.logger.error(f"Error during KafkaApp initialization: {e}")
+            else:
+                print(f"KafkaApp initialization failed: {e}")
             raise
 
     def run_producer(self):
