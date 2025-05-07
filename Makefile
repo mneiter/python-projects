@@ -1,4 +1,4 @@
-.PHONY: help up down build lint format test
+.PHONY: help up down build lint format test clean logs restart shell
 
 # Show available commands
 help:
@@ -9,6 +9,10 @@ help:
 	@echo "  make lint      - Run code linters and type checks"
 	@echo "  make format    - Auto-format code using black and isort"
 	@echo "  make test      - Run all unit tests with pytest"
+	@echo "  make clean     - Remove all __pycache__ and *.pyc files"
+	@echo "  make logs      - Show logs from the main app container"
+	@echo "  make restart   - Restart the main app container"
+	@echo "  make shell     - Open shell inside the main app container"
 
 # Start all services using docker-compose
 up:
@@ -34,3 +38,20 @@ format:
 # Run unit tests using pytest
 test:
 	pytest tests/
+
+# Remove Python cache files and artifacts
+clean:
+	find . -type d -name '__pycache__' -exec rm -r {} +
+	find . -type f -name '*.pyc' -delete
+
+# Show logs from the Python app container
+logs:
+	docker logs -f python-app
+
+# Restart the main app container
+restart:
+	docker-compose restart python-app
+
+# Open interactive shell in the app container
+shell:
+	docker exec -it python-app bash
